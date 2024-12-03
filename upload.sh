@@ -15,6 +15,7 @@ echo ""
 : "${RTSP_URLS:=}"
 : "${CAMERA_URLS:=}"
 : "${TOKENS:=}"
+: "${FINGERPRINTSS:=}"
 
 if [ -n "$RTSP_URLS" ]; then
     echo "Detected use of RTSP_URLS environment variable. Use CAMERA_URLS instead."
@@ -23,21 +24,20 @@ fi
 
 CAMERA_URLS=$(echo "$CAMERA_URLS" | tr -d ' ')
 TOKENS=$(echo "$TOKENS" | tr -d ' ')
+FINGERPRINTS=$(echo "$FINGERPRINTS" | tr -d ' ')
 FRAME_CAPTURE_DELAY=${FRAME_CAPTURE_DELAY:-1}
 CAMERA_CYCLE_DELAY=${CAMERA_CYCLE_DELAY:-10}
 CONNECTION_TIMEOUT_DELAY=${CONNECTION_TIMEOUT_DELAY:-5}
 
 IFS="," read -ra CAMERA_URLS <<< "$CAMERA_URLS"
 IFS="," read -ra TOKENS <<< "$TOKENS"
+IFS="," read -ra TOKENS <<< "$FINGERPRINTS"
 
-FINGERPRINTS=()
-for i in $(seq 1 ${#CAMERA_URLS[@]}); do
-    FINGERPRINTS+=($(printf "camera%010d" $i))
-done
+
 
 echo "Input variables:"
 for i in "${!CAMERA_URLS[@]}"; do
-    echo "Camera $((i + 1)), URL: ${CAMERA_URLS[$i]}, ${TOKENS[$i]}"
+    echo "Camera $((i + 1)), URL: ${CAMERA_URLS[$i]}, ${TOKENS[$i]}, ${FINGERPRINTSS[$i]}"
 done
 
 while true; do
